@@ -19,28 +19,28 @@ class TechnicianRepositoryTests {
     void testFindByNameTecnico() {
         Technician tech = new Technician();
         tech.setNameTecnico("Carlos Lopez");
-        tech.setEmailTecnico("carlos@example.com");
-        tech.setTelefonoTecnico("123456789");
-        tech.setEspecialidadTecnico("Redes");
+        tech.setZoneTecnico("Zona Norte");
+        tech.setWorkloadTecnico("Alta");
+        tech.setSpecialtyTecnico("Fibra Óptica");
 
         technicianRepository.save(tech);
 
         Optional<Technician> found = technicianRepository.findByNameTecnico("Carlos Lopez");
         assertTrue(found.isPresent());
-        assertEquals("Redes", found.get().getEspecialidadTecnico());
+        assertEquals("Fibra Óptica", found.get().getSpecialtyTecnico());
     }
 
     @Test
     void testExistsByNameTecnico() {
         Technician tech = new Technician();
         tech.setNameTecnico("Ana Ruiz");
-        tech.setEmailTecnico("ana@example.com");
-        tech.setTelefonoTecnico("987654321");
-        tech.setEspecialidadTecnico("Soporte");
+        tech.setZoneTecnico("Zona Sur");
+        tech.setWorkloadTecnico("Media");
+        tech.setSpecialtyTecnico("Redes");
 
         technicianRepository.save(tech);
 
         assertTrue(technicianRepository.existsByNameTecnico("Ana Ruiz"));
-        assertFalse(technicianRepository.existsByNameTecnico("NoExiste"));
+        assertFalse(technicianRepository.existsByNameTecnico("Pedro Pérez"));
     }
 }
