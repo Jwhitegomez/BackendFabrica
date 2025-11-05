@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
  * Run with Maven: mvn -DskipTests exec:java -Dexec.mainClass=com.telconovaP7F22025.demo.util.PasswordHashGenerator
  */
 public class PasswordHashGenerator {
-
     private static final Logger logger = LoggerFactory.getLogger(PasswordHashGenerator.class);
 
     public static void main(String[] args) {
@@ -17,7 +16,9 @@ public class PasswordHashGenerator {
         if (args != null && args.length > 0) {
             plain = args[0];
         }
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        logger.info(encoder.encode(plain));
+        String hashed = encoder.encode(plain);  
+        logger.info(hashed);                     
     }
 }
