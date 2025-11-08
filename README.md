@@ -42,7 +42,7 @@ Este backend está construido con una arquitectura moderna de Java, enfocada en 
 
 1.  **Clonar el repositorio:**
     ```sh
-    git clone [https://github.com/codeFactory20252Feature7/BackendFabrica.git](https://github.com/codeFactory20252Feature7/BackendFabrica.git)
+    git clone https://github.com/codeFactory20252Feature7/BackendFabrica.git
     cd BackendFabrica
     ```
 
