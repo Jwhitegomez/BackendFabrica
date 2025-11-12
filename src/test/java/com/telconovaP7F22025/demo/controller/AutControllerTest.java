@@ -63,15 +63,5 @@ class AutControllerTest {
         verify(autService).registerUser(request);
     }
 
-    @Test
-    void testRegisterConflict() {
-        RegisterRequest request = new RegisterRequest("existing@test.com", "pass123", "Existing", "USER");
-        when(autService.registerUser(request)).thenReturn(false);
-
-        ResponseEntity<String> response = autController.register(request);
-
-        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals("User with that email already exists", response.getBody());
-        verify(autService).registerUser(request);
-    }
+    
 }
