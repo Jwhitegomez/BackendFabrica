@@ -6,9 +6,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class TelconovaP7F2ApplicationTests {
 
+<<<<<<< HEAD
     @Test
     void contextLoads() {
         // Verifica que el contexto Spring se carga correctamente
     }
 }
 
+=======
+	@Test
+	void contextLoads() {
+	}
+
+}
+>>>>>>> main

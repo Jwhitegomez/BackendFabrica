@@ -19,7 +19,11 @@ public class AutServiceImpl implements AutService{
         public boolean authenticateUser(com.telconovaP7F22025.demo.dto.aut.LoginRequest loginRequest) {
             var userOpt = userRepository.findByEmailUsuario(loginRequest.email());
             if (userOpt.isEmpty() || !passwordEncoder.matches(loginRequest.password(), userOpt.get().getPasswordUsuario())) {
+<<<<<<< HEAD
                 throw new IllegalArgumentException("Invalid email or password");
+=======
+                throw new RuntimeException("Invalid email or password");
+>>>>>>> main
             }
             return true;
         }
