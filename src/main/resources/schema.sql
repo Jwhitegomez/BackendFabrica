@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 -- Schema for User entity (matches com.telconovaP7F22025.demo.model.User)
 -- Table: usuarios
 CREATE TABLE IF NOT EXISTS usuarios (
@@ -48,7 +48,7 @@ INSERT INTO tecnicos (name_tecnico, zone_tecnico, workload_tecnico, speciality_t
 	'Electricidad'
 );
 
-=======
+
 -- =================================================================================
 -- 1. LIMPIEZA
 -- =================================================================================
@@ -130,4 +130,4 @@ INSERT INTO work_orders (name_cliente, phone_cliente, tipo_servicio, prioridad, 
 ('Juan Valdéz', '3109876543', 'Instalación TV', 'MEDIA', 'ASIGNADA', 'Solicita deco adicional', 1),
 ('Hotel Plaza', '3201112233', 'Falla Masiva', 'URGENTE', 'EN_PROGRESO', 'Piso 4 sin señal', 2),
 ('Restaurante Cielo', '3005556677', 'Cambio Router', 'BAJA', 'FINALIZADA', 'Equipo obsoleto cambiado', 1);
->>>>>>> main
+

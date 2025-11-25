@@ -32,7 +32,7 @@ class AutControllerTest {
         LoginRequest request = new LoginRequest("user@test.com", "password123");
         when(autService.authenticateUser(request)).thenReturn(true);
 
-        ResponseEntity<String> response = autController.login(request);
+        ResponseEntity<String> response = (ResponseEntity<String>) autController.login(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Login successful", response.getBody());
@@ -44,7 +44,7 @@ class AutControllerTest {
         LoginRequest request = new LoginRequest("wrong@test.com", "badpass");
         when(autService.authenticateUser(request)).thenReturn(false);
 
-        ResponseEntity<String> response = autController.login(request);
+        ResponseEntity<String> response = (ResponseEntity<String>) autController.login(request);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("Invalid email or password", response.getBody());
