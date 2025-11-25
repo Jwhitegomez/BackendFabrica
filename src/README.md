@@ -62,7 +62,7 @@ La aplicación estará disponible en `http://localhost:8080`.
 
 ## Documentación y Endpoints de la API
 
-La documentación completa de la API se genera automáticamente con Swagger y está disponible una vez que la aplicación está en ejecución.
+La documentación completa de la API se genera automáticamente con Swagger y está disponible una vez que la aplicación está en ejecución
 
 * **Interfaz de Swagger (UI):** `http://localhost:8080/swagger-ui.html`
 * **Definición OpenAPI (JSON):** `http://localhost:8080/v3/api-docs`
