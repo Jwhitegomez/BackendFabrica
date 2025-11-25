@@ -1,5 +1,6 @@
 package com.telconovaP7F22025.demo.controller;
 
+import com.telconovaP7F22025.demo.config.JwtUtil;
 import com.telconovaP7F22025.demo.dto.aut.LoginRequest;
 import com.telconovaP7F22025.demo.dto.aut.RegisterRequest;
 import com.telconovaP7F22025.demo.service.AutService;
@@ -11,6 +12,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -18,6 +21,9 @@ class AutControllerTest {
 
     @Mock
     private AutService autService;
+
+    @Mock
+    private JwtUtil jwtUtil;
 
     @InjectMocks
     private AutController autController;
@@ -30,12 +36,19 @@ class AutControllerTest {
     @Test
     void testLoginSuccessful() {
         LoginRequest request = new LoginRequest("user@test.com", "password123");
-        when(autService.authenticateUser(request)).thenReturn(true);
 
-        ResponseEntity<String> response = (ResponseEntity<String>) autController.login(request);
+        when(autService.authenticateUser(request)).thenReturn(true);
+        when(jwtUtil.generateToken("user@test.com")).thenReturn("fake-token");
+
+        ResponseEntity<?> response = autController.login(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Login successful", response.getBody());
+
+        Map body = (Map) response.getBody();
+        assertNotNull(body);
+        assertEquals("fake-token", body.get("token"));
+        assertEquals("Login exitoso", body.get("message"));
+
         verify(autService).authenticateUser(request);
     }
 
@@ -44,10 +57,11 @@ class AutControllerTest {
         LoginRequest request = new LoginRequest("wrong@test.com", "badpass");
         when(autService.authenticateUser(request)).thenReturn(false);
 
-        ResponseEntity<String> response = (ResponseEntity<String>) autController.login(request);
+        ResponseEntity<?> response = autController.login(request);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("Invalid email or password", response.getBody());
+        assertEquals("Credenciales inválidas", response.getBody());
+
         verify(autService).authenticateUser(request);
     }
 
@@ -59,7 +73,8 @@ class AutControllerTest {
         ResponseEntity<String> response = autController.register(request);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals("User registered", response.getBody());
+        assertEquals("Usuario registrado exitosamente", response.getBody());
+
         verify(autService).registerUser(request);
     }
 
@@ -71,7 +86,8 @@ class AutControllerTest {
         ResponseEntity<String> response = autController.register(request);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
-        assertEquals("User with that email already exists", response.getBody());
+        assertEquals("El usuario ya existe", response.getBody());
+
         verify(autService).registerUser(request);
     }
 }
