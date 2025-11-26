@@ -24,7 +24,7 @@ public class AutController {
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequest loginRequest) {
         boolean isAuthenticated = autService.authenticateUser(loginRequest);
         if (isAuthenticated) {
             // Generar y devolver Token

@@ -35,7 +35,11 @@ public class AuditTrigger implements Trigger {
     }
 
     @Override
-    public void close() {}
+    public void close() {
+        // Método requerido por la interfaz Trigger, pero no necesita implementación para este trigger.
+    }
     @Override
-    public void remove() {}
+    public void remove() {
+        // No se requiere lógica de limpieza cuando el trigger es removido.
+    }
 }

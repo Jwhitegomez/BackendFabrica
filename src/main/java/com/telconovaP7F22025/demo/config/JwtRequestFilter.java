@@ -39,16 +39,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // En un caso real cargariamos roles desde DB. Aqui usamos lista vacia por simplicidad del taller
-            if (jwtUtil.validateToken(jwt, username)) {
-                UserDetails userDetails = new User(username, "", new ArrayList<>());
-                UsernamePasswordAuthenticationToken authToken = 
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+        if (username != null
+                && SecurityContextHolder.getContext().getAuthentication() == null
+                && jwtUtil.validateToken(jwt, username)) {
+
+            UserDetails userDetails = new User(username, "", new ArrayList<>());
+            UsernamePasswordAuthenticationToken authToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+
         chain.doFilter(request, response);
     }
 }
