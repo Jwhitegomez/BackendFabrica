@@ -46,4 +46,5 @@ jobs:
             -Dsonar.organization=jwhitegomez \
             -Dsonar.projectKey=Jwhitegomez_BackendFabrica \
             -Dsonar.host.url=https://sonarcloud.io
-
+            -Dsonar.java.coveragePlugin=jacoco \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
