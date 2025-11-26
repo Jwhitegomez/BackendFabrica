@@ -6,14 +6,12 @@ import com.telconovaP7F22025.demo.dto.aut.LoginRequest;
 import com.telconovaP7F22025.demo.dto.aut.RegisterRequest;
 import com.telconovaP7F22025.demo.service.AutService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -21,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AutController.class)
+@AutoConfigureMockMvc(addFilters = false) // <-- desactiva filtros de seguridad para estos tests de controlador
 class AutControllerTest {
 
     @Autowired private MockMvc mockMvc;
@@ -33,7 +32,7 @@ class AutControllerTest {
     void loginSuccess() throws Exception {
         LoginRequest req = new LoginRequest("user@mail.com", "pass");
 
-        when(autService.authenticateUser(req)).thenReturn(true);
+        when(autService.authenticateUser(any())).thenReturn(true);
         when(jwtUtil.generateToken("user@mail.com")).thenReturn("jwt-token");
 
         mockMvc.perform(post("/api/auth/login")
@@ -48,7 +47,7 @@ class AutControllerTest {
     void loginFails() throws Exception {
         LoginRequest req = new LoginRequest("u@mail.com", "pass");
 
-        when(autService.authenticateUser(req)).thenReturn(false);
+        when(autService.authenticateUser(any())).thenReturn(false);
 
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -61,7 +60,7 @@ class AutControllerTest {
     void registerSuccess() throws Exception {
         RegisterRequest req = new RegisterRequest("John", "j@mail.com", "1234", "ADMIN");
 
-        when(autService.registerUser(req)).thenReturn(true);
+        when(autService.registerUser(any())).thenReturn(true);
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +73,7 @@ class AutControllerTest {
     void registerFails() throws Exception {
         RegisterRequest req = new RegisterRequest("John", "j@mail.com", "1234", "ADMIN");
 
-        when(autService.registerUser(req)).thenReturn(false);
+        when(autService.registerUser(any())).thenReturn(false);
 
         mockMvc.perform(post("/api/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)

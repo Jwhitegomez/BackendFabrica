@@ -49,7 +49,6 @@ class AutServiceImplTest {
     @Test
     void authenticateUserFailsUserNotFound() {
         LoginRequest req = new LoginRequest("notfound@mail.com", "1234");
-
         when(userRepository.findByEmailUsuario("notfound@mail.com")).thenReturn(Optional.empty());
 
         Exception ex = assertThrows(IllegalArgumentException.class, () -> autService.authenticateUser(req));
@@ -71,13 +70,16 @@ class AutServiceImplTest {
 
         Exception ex = assertThrows(IllegalArgumentException.class, () -> autService.authenticateUser(req));
         assertEquals("Invalid email or password", ex.getMessage());
+
+        verify(userRepository).findByEmailUsuario("test@mail.com");
+        verify(passwordEncoder).matches("wrong", "hash");
     }
 
     @Test
     void registerUserSuccess() {
         RegisterRequest req = new RegisterRequest("John", "john@mail.com", "1234", "ADMIN");
 
-        when(userRepository.existsByEmailUsuario("john@mail.com")).thenReturn(false);
+        when(userRepository.existsByEmailUsuario(anyString())).thenReturn(false); // <- matcher
         when(passwordEncoder.encode("1234")).thenReturn("hashed");
 
         boolean created = autService.registerUser(req);
@@ -92,7 +94,7 @@ class AutServiceImplTest {
     void registerUserFailsBecauseExists() {
         RegisterRequest req = new RegisterRequest("John", "john@mail.com", "1234", "ADMIN");
 
-        when(userRepository.existsByEmailUsuario("john@mail.com")).thenReturn(true);
+        when(userRepository.existsByEmailUsuario(anyString())).thenReturn(true); // <- matcher
 
         boolean created = autService.registerUser(req);
 

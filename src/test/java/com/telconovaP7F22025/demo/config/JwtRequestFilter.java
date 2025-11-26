@@ -3,6 +3,7 @@ package com.telconovaP7F22025.demo.config;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +24,12 @@ class JwtRequestFilterTest {
 
     @InjectMocks private JwtRequestFilter filter;
 
+    @BeforeEach
+    void clearContext() {
+        // Muy importante: limpiar el contexto entre tests para evitar autenticación residual
+        SecurityContextHolder.clearContext();
+    }
+
     @Test
     void validTokenAuthenticatesUser() throws Exception {
         when(request.getHeader("Authorization")).thenReturn("Bearer abc123");
@@ -38,7 +45,10 @@ class JwtRequestFilterTest {
     @Test
     void invalidTokenDoesNotAuthenticate() throws Exception {
         when(request.getHeader("Authorization")).thenReturn("Bearer token");
+        // forzamos que extraer el username falle: así el filtro no autentica
         when(jwtUtil.extractUsername("token")).thenThrow(new RuntimeException("invalid"));
+        // también aseguramos que validateToken no devuelva true por si acaso
+        when(jwtUtil.validateToken(anyString(), anyString())).thenReturn(false);
 
         filter.doFilterInternal(request, response, filterChain);
 
@@ -52,6 +62,15 @@ class JwtRequestFilterTest {
 
         filter.doFilterInternal(request, response, filterChain);
 
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(filterChain).doFilter(request, response);
+    }
+
+    // Opcional: aumenta cobertura cubriendo header mal formado
+    @Test
+    void malformedHeaderSkipsAuthentication() throws Exception {
+        when(request.getHeader("Authorization")).thenReturn("Token xyz");
+        filter.doFilterInternal(request, response, filterChain);
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
     }
