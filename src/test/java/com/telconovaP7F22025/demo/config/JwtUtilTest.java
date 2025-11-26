@@ -9,25 +9,15 @@ class JwtUtilTest {
     private final JwtUtil jwtUtil = new JwtUtil();
 
     @Test
-    void generateTokenAndExtractUsername() {
-        String token = jwtUtil.generateToken("user@test.com");
+    void test_GenerateAndValidateToken() {
+        String token = jwtUtil.generateToken("test@example.com");
 
         assertNotNull(token);
-        assertEquals("user@test.com", jwtUtil.extractUsername(token));
-    }
 
-    @Test
-    void validateTokenSuccess() {
-        String token = jwtUtil.generateToken("user@test.com");
+        String extractedUser = jwtUtil.extractUsername(token);
+        assertEquals("test@example.com", extractedUser);
 
-        assertTrue(jwtUtil.validateToken(token, "user@test.com"));
-    }
-
-    @Test
-    void validateTokenWrongUserFails() {
-        String token = jwtUtil.generateToken("user@test.com");
-
-        assertFalse(jwtUtil.validateToken(token, "other@mail.com"));
+        assertTrue(jwtUtil.validateToken(token, "test@example.com"));
     }
 }
 

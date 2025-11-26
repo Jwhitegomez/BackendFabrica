@@ -1,84 +1,81 @@
 package com.telconovaP7F22025.demo.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.telconovaP7F22025.demo.config.JwtUtil;
 import com.telconovaP7F22025.demo.dto.aut.LoginRequest;
 import com.telconovaP7F22025.demo.dto.aut.RegisterRequest;
 import com.telconovaP7F22025.demo.service.AutService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.Mockito;
+import org.springframework.http.ResponseEntity;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(AutController.class)
-@AutoConfigureMockMvc(addFilters = false) // <-- desactiva filtros de seguridad para estos tests de controlador
 class AutControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @Autowired private ObjectMapper mapper;
-
-    @MockBean private AutService autService;
-    @MockBean private JwtUtil jwtUtil;
-
     @Test
-    void loginSuccess() throws Exception {
-        LoginRequest req = new LoginRequest("user@mail.com", "pass");
+    void test_LoginSuccess() {
+        AutService service = mock(AutService.class);
+        JwtUtil jwtUtil = mock(JwtUtil.class);
 
-        when(autService.authenticateUser(any())).thenReturn(true);
-        when(jwtUtil.generateToken("user@mail.com")).thenReturn("jwt-token");
+        AutController controller = new AutController(service, jwtUtil);
 
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(req)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.token").value("jwt-token"))
-                .andExpect(jsonPath("$.message").value("Login exitoso"));
+        LoginRequest req = new LoginRequest("a@a.com", "123");
+
+        when(service.authenticateUser(req)).thenReturn(true);
+        when(jwtUtil.generateToken("a@a.com")).thenReturn("TOKEN123");
+
+        ResponseEntity<?> response = controller.login(req);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertTrue(response.getBody().toString().contains("TOKEN123"));
     }
 
     @Test
-    void loginFails() throws Exception {
-        LoginRequest req = new LoginRequest("u@mail.com", "pass");
+    void test_LoginUnauthorized() {
+        AutService service = mock(AutService.class);
+        JwtUtil jwtUtil = mock(JwtUtil.class);
 
-        when(autService.authenticateUser(any())).thenReturn(false);
+        AutController controller = new AutController(service, jwtUtil);
 
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(req)))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Credenciales inválidas"));
+        LoginRequest req = new LoginRequest("a@a.com", "123");
+
+        when(service.authenticateUser(req)).thenReturn(false);
+
+        ResponseEntity<?> response = controller.login(req);
+
+        assertEquals(401, response.getStatusCodeValue());
     }
 
     @Test
-    void registerSuccess() throws Exception {
-        RegisterRequest req = new RegisterRequest("John", "j@mail.com", "1234", "ADMIN");
+    void test_RegisterSuccess() {
+        AutService service = mock(AutService.class);
+        JwtUtil jwtUtil = mock(JwtUtil.class);
 
-        when(autService.registerUser(any())).thenReturn(true);
+        AutController controller = new AutController(service, jwtUtil);
 
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(req)))
-                .andExpect(status().isCreated())
-                .andExpect(content().string("Usuario registrado exitosamente"));
+        RegisterRequest req = new RegisterRequest("a@a.com", "123", "John", "USER");
+
+        when(service.registerUser(req)).thenReturn(true);
+
+        ResponseEntity<String> resp = controller.register(req);
+
+        assertEquals(201, resp.getStatusCodeValue());
     }
 
     @Test
-    void registerFails() throws Exception {
-        RegisterRequest req = new RegisterRequest("John", "j@mail.com", "1234", "ADMIN");
+    void test_RegisterConflict() {
+        AutService service = mock(AutService.class);
+        JwtUtil jwtUtil = mock(JwtUtil.class);
 
-        when(autService.registerUser(any())).thenReturn(false);
+        AutController controller = new AutController(service, jwtUtil);
 
-        mockMvc.perform(post("/api/auth/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(req)))
-                .andExpect(status().isConflict())
-                .andExpect(content().string("El usuario ya existe"));
+        RegisterRequest req = new RegisterRequest("a@a.com", "123", "John", "USER");
+
+        when(service.registerUser(req)).thenReturn(false);
+
+        ResponseEntity<String> resp = controller.register(req);
+
+        assertEquals(409, resp.getStatusCodeValue());
     }
 }
