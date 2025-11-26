@@ -1,4 +1,4 @@
-package com.telconovaP7F22025.demo.service;
+package com.telconovaP7F22025.demo.service.impl;
 
 import com.telconovaP7F22025.demo.dto.aut.LoginRequest;
 import com.telconovaP7F22025.demo.dto.aut.RegisterRequest;
